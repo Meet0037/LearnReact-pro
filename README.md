@@ -310,7 +310,9 @@ In this lesson, we’re going to add something new: regular JavaScript, written 
 ---------------------
 The code in the last exercise didn’t behave as one might expect. Instead of adding 2 and 3, it printed out “2 + 3” as a string of text. Why?
 
-This happened because 2 + 3 is located in between <h1> and </h1> tags.
+This happened because 2 + 3 is located in between 
+
+    <h1> and </h1> tags.
 
 Any code in between the tags of a JSX element will be read as JSX, not as regular JavaScript! JSX doesn’t add numbers - it reads them as text, just like HTML.
 
@@ -321,7 +323,7 @@ You can do this by wrapping your code in curly braces.
     <h1>{2 + 3}</h1> //output - 5
 
 ---------------------------
-5. 20 Digits of Pi in JSX
+5.(20) Digits of Pi in JSX
 ---------------------------
 
     import React from 'react';
