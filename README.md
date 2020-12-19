@@ -345,13 +345,13 @@ You can do this by wrapping your code in curly braces.
     
 Study the expression and notice the following:
 
-> The code is written in a JavaScript file. By default, it will all be treated as regular JavaScript.
+-> The code is written in a JavaScript file. By default, it will all be treated as regular JavaScript.
 
-> Find <div> on line 5. From there up through </div>, the code will be treated as JSX.
+-> Find <div> on line 5. From there up through </div>, the code will be treated as JSX.
 
-> Find Math. From there up through (20), the code will be treated as regular JavaScript again.
+-> Find Math.From there up through (20), the code will be treated as regular JavaScript again.
 
-> The curly braces themselves won’t be treated as JSX nor as JavaScript. They are markers that signal the beginning and end of a JavaScript injection into JSX, similar to the quotation marks that signal the boundaries of a string.
+-> The curly braces themselves won’t be treated as JSX nor as JavaScript. They are markers that signal the beginning and end of a JavaScript injection into JSX, similar to the quotation marks that signal the boundaries of a string.
 
 
 
