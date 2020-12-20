@@ -1,8 +1,8 @@
 # LearnReact-pro
 
--------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Intro to JSX
--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+A.Intro to JSX
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ----------------
 1.What is JSX?
@@ -658,3 +658,144 @@ can be rewritten without JSX, like this:
     );
     
 When a JSX element is compiled, the compiler transforms the JSX element into the method that you see above: React.createElement(). Every JSX element is secretly a call to React.createElement().
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+B.Your First React Component
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------
+1.Hello World, Part II... THE COMPONENT
+----------------------------------------
+
+What’s a component?
+
+A component is a small, reusable chunk of code that is responsible for one job. That job is often to render some HTML.
+
+Take a look at the code below. This code will create and render a new React component: 
+
+    import React from 'react';
+    import ReactDOM from 'react-dom';
+
+    class MyComponentClass extends React.Component {
+      render() {
+        return <h1>Hello world</h1>;
+      }
+    };
+
+    ReactDOM.render(
+      <MyComponentClass />,
+      document.getElementById('app')
+    );
+    
+A lot of that code is probably unfamiliar. However you can recognize some JSX in there, as well as ReactDOM.render().
+
+-------------------------------------
+2.Import React
+--------------------------------------
+Wooo! Your first React component!
+
+Take a look at the code on line 1:
+
+    import React from 'react';
+    
+This imported object contains methods that you need in order to use React. The object is called the React library.
+
+Later, we’ll go over where the React library is imported from, and how the importing process works. For now, just know that you get the React library via import React from 'react';.
+
+You’ve already seen one of the methods contained in the React library: React.createElement(). Recall that when a JSX element is compiled, it transforms into a React.createElement() call.
+
+For this reason, you have to import the React library, and save it in a variable named React, before you can use any JSX at all. React.createElement() must be available in order for JSX to work. 
+
+----------------------------
+3.Import ReactDOM
+---------------------------
+
+    import ReactDOM from 'react-dom';
+    
+The methods imported from 'react-dom' are meant for interacting with the DOM. You are already familiar with one of them: ReactDOM.render().
+
+The methods imported from 'react' don’t deal with the DOM at all. They don’t engage directly with anything that isn’t part of React.
+
+To clarify: the DOM is used in React applications, but it isn’t part of React. After all, the DOM is also used in countless non-React applications. Methods imported from 'react' are only for pure React purposes, such as creating components or writing JSX elements.
+
+-----------------------------
+4.Create a Component Class
+-----------------------------
+
+You’ve learned that a React component is a small, reusable chunk of code that is responsible for one job, which often involves rendering HTML.
+
+Here’s another fact about components: we can use a JavaScript class to define a new React component. We can also define components with JavaScript functions, but we’ll focus on class components first.
+
+All class components will have some methods and properties in common (more on this later). Rather than rewriting those same properties over and over again every time, we extend the Component class from the React library. This way, we can use code that we import from the React library, without having to write it over and over again ourselves.
+
+After we define our class component, we can use it to render as many instances of that component as we want.
+
+What is React.Component, and how do you use it to make a component class?
+
+React.Component is a JavaScript class. To create your own component class, you must subclass React.Component. You can do this by using the syntax class YourComponentNameGoesHere extends React.Component {}.
+
+JavaScript classes and subclassing are a complex topic beyond the scope of this course. If you aren’t comfortable with them, here are some good resources to consult: 1 2 3 4.
+
+Look at the code in app.js. A lot of it is still unfamiliar, but you can understand more than you could before!
+
+On line 4, you know that you are declaring a new component class, which is like a factory for building React components. You know that React.Component is a class, which you must subclass in order to create a component class of your own. You also know that React.Component is a property on the object which was returned by import React from 'react' on line 1.
+
+---------------------------
+5.Name a Component Class
+----------------------------
+
+Good! Subclassing (React.Component) is the way to declare a new component class.
+
+When you declare a new component class, you need to give that component class a name. On line 4, notice that our component class’s name is MyComponentClass.
+
+Component class variable names must begin with capital letters!
+
+This adheres to JavaScript’s class syntax. It also adheres to a broader programming convention in which class names are written in UpperCamelCase.
+
+--------------------------------
+6.Component Class Instructions
+-------------------------------
+
+Something that we haven’t talked about yet is the body of your component class: the pair of curly braces after React.Component, and all of the code between those curly braces.
+
+Like all JavaScript classes, this one needs a body. The body will act as a set of instructions, explaining to your component class how it should build a React component.
+
+    {
+      render() {
+        return <h1>Hello world</h1>;
+      }
+    }
+    
+That doesn’t look like a set of instructions explaining how to build a React component! Yet that’s exactly what it is. Read ->
+
+-------------------------
+
+--------------------------
+
+A component class is like a factory that builds components. It builds these components by consulting a set of instructions, which you must provide. Let’s talk about these instructions!
+
+For starters, these instructions should take the form of a class declaration body. That means that they will be delimited by curly braces, like this:
+
+    class ComponentFactory extends React.Component {
+      // instructions go here, between the curly braces
+    }
+
+The instructions should be written in typical JavaScript ES2015 class syntax.
+
+There is only one property that you have to include in your instructions: a render method.
+
+A render method is a property whose name is render, and whose value is a function. The term “render method” can refer to the entire property, or to just the function part.
+
+    class ComponentFactory extends React.Component {
+      render() {}
+    }
+
+A render method must contain a return statement. Usually, this return statement returns a JSX expression:
+
+    class ComponentFactory extends React.Component {
+      render() {
+        return <h1>Hello world</h1>;
+      }
+    }
+
+Of course, none of this explains the point of a render method. All you know so far is that its name is render, it needs a return statement for some reason, and you have to include it in the body of your component class declaration. We’ll get to the ‘why’ of it soon!
