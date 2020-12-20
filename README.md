@@ -459,7 +459,7 @@ This code will break:
     )
 
 ---------------------------------------------
-JSX Conditionals: If Statements That Do Work
+10.JSX Conditionals: If Statements That Do Work
 ---------------------------------------------
 
 How can you write a conditional, if you can’t inject an if statement into JSX?
@@ -507,3 +507,154 @@ Note : !!! Remember: semi-colons are used in JavaScript, but not within JSX expr
         <img src={pics.kitty} />;
       )
 
+-----------------------------------------
+11.JSX Conditionals: The Ternary Operator
+-----------------------------------------
+
+There’s a more compact way to write conditionals in JSX: the ternary operator.
+
+The ternary operator works the same way in React as it does in regular JavaScript. However, it shows up in React surprisingly often.
+
+Recall how it works: you write x ? y : z, where x, y, and z are all JavaScript expressions. When your code is executed, x is evaluated as either “truthy” or “falsy.” If x is truthy, then the entire ternary operator returns y. If x is falsy, then the entire ternary operator returns z.
+
+Here’s how you might use the ternary operator in a JSX expression:
+
+    const headline = (
+      <h1>
+        { age >= drinkingAge ? 'Buy Drink' : 'Do Teen Stuff' }
+      </h1>
+    );
+    
+In the above example, if age is greater than or equal to drinkingAge, then headline will equal Buy Drink. Otherwise, headline will equal Do Teen Stuff.
+
+-------------------------------
+12.JSX Conditionals: &&
+--------------------------------
+
+We’re going to cover one final way of writing conditionals in React: the && operator.
+
+Like the ternary operator, && is not React-specific, but it shows up in React surprisingly often.
+
+In the last two lessons, you wrote statements that would sometimes render a kitty and other times render a doggy. && would not have been the best choice for those lessons.
+
+&& works best in conditionals that will sometimes do an action, but other times do nothing at all. 
+
+Here’s an example:
+
+    const tasty = (
+      <ul>
+        <li>Applesauce</li>
+        { !baby && <li>Pizza</li> }
+        { age > 15 && <li>Brussels Sprouts</li> }
+        { age > 20 && <li>Oysters</li> }
+        { age > 25 && <li>Grappa</li> }
+      </ul>
+    );
+    
+If the expression on the left of the && evaluates as true, then the JSX on the right of the && will be rendered. If the first expression is false, however, then the JSX to the right of the && will be ignored and not rendered.
+
+----------------------
+13..map in JSX
+----------------------
+
+The array method .map() comes up often in React. It’s good to get in the habit of using it alongside JSX.
+
+If you want to create a list of JSX elements, then .map() is often your best bet. It can look odd at first:
+
+    const strings = ['Home', 'Shop', 'About Me'];
+
+    const listItems = strings.map(string => <li>{string}</li>);
+
+    <ul>{listItems}</ul>
+    
+In the above example, we start out with an array of strings. We call .map() on this array of strings, and the .map() call returns a new array of <li>s.
+
+On the last line of the example, note that {listItems} will evaluate to an array, because it’s the returned value of .map()! JSX <li>s don’t have to be in an array like this, but they can be.
+
+// This is fine in JSX, not in an explicit array:
+ 
+    <ul>
+      <li>item 1</li>
+      <li>item 2</li>
+      <li>item 3</li>
+    </ul>
+
+    // This is also fine!
+
+    const liArray = [
+      <li>item 1</li>, 
+      <li>item 2<li>, 
+      <li>item 3</li>
+    ];
+
+    <ul>{liArray}</ul>    
+
+Ex : 
+
+    import React from 'react';
+    import ReactDOM from 'react-dom';
+
+    const people = ['Rowe', 'Prevost', 'Gare'];
+
+    const peopleLis = people.map(person => <li>{person}</li>
+      // expression goes here:
+
+    );
+
+    // ReactDOM.render goes here:
+    ReactDOM.render(
+      <ul>{peopleLis}</ul>,
+      document.getElementById('app')
+    );
+    
+    //Output:
+    
+                                                Rowe
+                                                Prevost
+                                                Gare
+                                                
+ ----------------------
+ 14.Keys
+ ---------------------
+ 
+ When you make a list in JSX, sometimes your list will need to include something called keys:
+
+     <ul>
+      <li key="li-01">Example1</li>
+      <li key="li-02">Example2</li>
+      <li key="li-03">Example3</li>
+    </ul>
+    
+A key is a JSX attribute. The attribute’s name is key. The attribute’s value should be something unique, similar to an id attribute.
+
+keys don’t do anything that you can see! React uses them internally to keep track of lists. If you don’t use keys when you’re supposed to, React might accidentally scramble your list-items into the wrong order.
+
+Not all lists need to have keys. A list needs keys if either of the following are true:
+
+1. The list-items have memory from one render to the next. For instance, when a to-do list renders, each item must “remember” whether it was checked off. The items shouldn’t get amnesia when they render.
+
+2. A list’s order might be shuffled. For instance, a list of search results might be shuffled from one render to the next.
+
+If neither of these conditions are true, then you don’t have to worry about keys. If you aren’t sure then it never hurts to use them!
+
+------------------------
+15.React.createElement
+------------------------
+
+You can write React code without using JSX at all!
+
+The majority of React programmers do use JSX, and we will use it for the remainder of this tutorial, but you should understand that it is possible to write React code without it.
+
+The following JSX expression:
+
+    const h1 = <h1>Hello world</h1>;
+    
+can be rewritten without JSX, like this:
+
+    const h1 = React.createElement(
+      "h1",
+      null,
+      "Hello, world"
+    );
+    
+When a JSX element is compiled, the compiler transforms the JSX element into the method that you see above: React.createElement(). Every JSX element is secretly a call to React.createElement().
