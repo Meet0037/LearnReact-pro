@@ -419,19 +419,91 @@ Object properties are also often used to set attributes:
         alt="Ghastly Abomination" />
     ); 
         
-        
+-------------------------
+8.Event Listeners in JSX
+------------------------
 
+JSX elements can have event listeners, just like HTML elements can. Programming in React means constantly working with event listeners.
 
+You create an event listener by giving a JSX element a special attribute. Here’s an example:
 
+    <img onClick={myFunc} />
+    
+An event listener attribute’s name should be something like onClick or onMouseOver: the word on, plus the type of event that you’re listening for.
+An event listener attribute’s value should be a function. The above example would only work if myFunc were a valid function that had been defined elsewhere:
 
+    function myFunc() {
+      alert('Make myFunc the pFunc... omg that was horrible i am so sorry');
+    }
 
+    <img onClick={myFunc} />
 
+Note : In HTML, event listener names are written in all lowercase, such as onclick or onmouseover. In JSX, event listener names are written in camelCase, such as onClick or onMouseOver.
 
+------------------------------------------------
+9.JSX Conditionals: If Statements That Don't Work
+------------------------------------------------
 
+Great work! You’ve learned how to use curly braces to inject JavaScript into a JSX expression! Here’s a rule that you need to know: you can not inject an if statement into a JSX expression.
 
+This code will break:
 
+    (
+      <h1>
+        {
+          if (purchase.complete) {
+            'Thank you for placing an order!'
+          }
+        }
+      </h1>
+    )
 
+---------------------------------------------
+JSX Conditionals: If Statements That Do Work
+---------------------------------------------
 
+How can you write a conditional, if you can’t inject an if statement into JSX?
 
+    import React from 'react';
+    import ReactDOM from 'react-dom';
 
+    let message;
+
+    if (user.age >= drinkingAge) {
+      message = (
+        <h1>
+          Hey, check out this alcoholic beverage!
+        </h1>
+      );
+    } else {
+      message = (
+        <h1>
+          Hey, check out these earrings I got at Claire's!
+        </h1>
+      );
+    }
+
+    ReactDOM.render(
+      message, 
+      document.getElementById('app')
+    );
+
+Well, one option is to write an if statement, and not inject it into JSX.
+
+Look at if.js. Follow the if statement, all the way from line 6 down to line 18.
+
+if.js works, because the words if and else are not injected in between JSX tags. The if statement is on the outside, and no JavaScript injection is necessary.
+
+This is a common way to express conditionals in JSX.
+
+Note : !!! Remember: semi-colons are used in JavaScript, but not within JSX expressions!
+
+       // like this
+      img = (
+        <img src={pics.kitty} />
+      );
+    // NOT like this
+      img = (
+        <img src={pics.kitty} />;
+      )
 
