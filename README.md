@@ -1126,8 +1126,18 @@ In React, you define event handlers as methods on a component class. Like this:
 
 Notice that the component class has two methods: .myFunc() and .render(). .myFunc() is being used as an event handler. .myFunc() will be called any time that a user hovers over the rendered <div></div>.
 
---------------------------
-project2
---------------------------
+----------------------------
+project2-Authorization Form
+----------------------------
+Scenario:
+
+A client just called you to say that they love their new website! There’s only one problem: they don’t like how their contact page displays their personal information for all to see.
+
+They’ve asked you to hide their website’s contact page behind a password form. In this project, you’ll accomplish this by using a React component to set up a simple authorization layer.
+
+Let’s get started!
+
+(Check uploaded files for the code)
+
 
 
