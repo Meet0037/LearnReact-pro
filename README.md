@@ -1662,3 +1662,225 @@ Click Run. Once the browser refreshes, click on the button. Ew, how annoying!
 10.handleEvent, onEvent, and this.props.onEvent
 ------------------------------------------------
 
+Let’s talk about naming things.
+
+When you pass an event handler as a prop, as you just did, there are two names that you have to choose.
+
+Both naming choices occur in the parent component class - that is, in the component class that defines the event handler and passes it.
+
+The first name that you have to choose is the name of the event handler itself.
+
+Look at Talker.js, lines 6 through 12. This is our event handler. We chose to name it talk.
+
+The second name that you have to choose is the name of the prop that you will use to pass the event handler. This is the same thing as your attribute name.
+
+For our prop name, we also chose talk, as shown on line 15:
+
+    return <Button talk={this.talk} />;
+
+These two names can be whatever you want. However, there is a naming convention that they often follow. You don’t have to follow this convention, but you should understand it when you see it.
+
+Here’s how the naming convention works: first, think about what type of event you are listening for. In our example, the event type was “click.”
+
+If you are listening for a “click” event, then you name your event handler handleClick. If you are listening for a “keyPress” event, then you name your event handler handleKeyPress:
+
+    class MyClass extends React.Component {
+      handleHover() {
+        alert('I am an event handler.');
+        alert('I will be called in response to "hover" events.');
+      }
+    }
+
+Your prop name should be the word on, plus your event type. If you are listening for a “click” event, then you name your prop onClick. If you are listening for a “keyPress” event, then you name your prop onKeyPress:
+
+    class MyClass extends React.Component {
+      handleHover() {
+        alert('I am an event handler.');
+        alert('I will listen for a "hover" event.');
+      }
+
+      render() {
+        return <Child onHover={this.handleHover} />;
+      }
+    }
+
+Ex:
+
+    //Talker.js
+    
+    import React from 'react';
+    import ReactDOM from 'react-dom';
+    import { Button } from './Button';
+
+    class Talker extends React.Component {
+      handleClick() {
+        let speech = '';
+        for (let i = 0; i < 10000; i++) {
+          speech += 'blah ';
+        }
+        alert(speech);
+      }
+
+      render() {
+        return <Button onClick={this.handleClick} />;
+      }
+    }
+
+    ReactDOM.render(
+      <Talker />,
+      document.getElementById('app')
+    );
+    
+    //Button.js
+    
+    import React from 'react';
+    
+    export class Button extends React.Component {
+      render() {
+        return (
+          <button onClick={this.props.onClick} >
+            Click me!
+          </button>
+        );
+      }
+    }
+   
+------------------   
+Note !!!!!!!!!! :
+-------------------
+One major source of confusion is the fact that names like onClick have special meaning, but only if they’re used on HTML-like elements.
+
+Look at Button.js. When you give a <button></button> an attribute named onClick, then the name onClick has special meaning. As you’ve learned, this special onClick attribute creates an event listener, listening for clicks on the <button></button>:
+
+    // Button.js
+
+    // The attribute name onClick
+    // creates an event listner:
+    <button onClick={this.props.onClick}>
+      Click me!
+    </button>
+
+Now look at Talker.js. Here, when you give <Button /> an attribute named onClick, then the name onClick doesn’t do anything special. The name onClick does not create an event listener when used on <Button /> - it’s just an arbitrary attribute name:
+
+    // Talker.js
+
+    // The attribute name onClick
+    // is just a normal attribute name:
+    <Button onClick={this.handleClick} />
+
+The reason for this is that <Button /> is not an HTML-like JSX element; it’s a component instance.
+
+Names like onClick only create event listeners if they’re used on HTML-like JSX elements. Otherwise, they’re just ordinary prop names.
+
+------------------------
+11.this.props.children
+--------------------------
+Every component’s props object has a property named children.
+
+this.props.children will return everything in between a component’s opening and closing JSX tags.
+
+So far, all of the components that you’ve seen have been self-closing tags, such as <MyComponentClass />. They don’t have to be! You could write <MyComponentClass></MyComponentClass>, and it would still work.
+
+this.props.children would return everything in between <MyComponentClass> and </MyComponentClass>.
+
+Look at BigButton.js. In Example 1, <BigButton>‘s this.props.children would equal the text, “I am a child of BigButton.”
+
+In Example 2, <BigButton>‘s this.props.children would equal a <LilButton /> component.
+
+In Example 3, <BigButton>‘s this.props.children would equal undefined.
+
+If a component has more than one child between its JSX tags, then this.props.children will return those children in an array. However, if a component has only one child, then this.props.children will return the single child, not wrapped in an array.
+
+Ex:
+
+    //App.js
+    
+    import React from 'react';
+    import ReactDOM from 'react-dom';
+    import { List } from './List';
+
+    class App extends React.Component {
+      render() {
+        return (
+          <div>
+            <List type='Living Musician'>
+              <li>Sachiko M</li>
+              <li>Harvey Sid Fisher</li>
+            </List>
+            <List type='Living Cat Musician'>
+              <li>Nora the Piano Cat</li>
+            </List>
+          </div>
+        );
+      }
+    }
+
+    ReactDOM.render(
+      <App />, 
+      document.getElementById('app')
+    );
+
+    //List.js
+    
+    import React from 'react';
+
+    export class List extends React.Component {
+      render() {
+        let titleText = `Favorite ${this.props.type}`;
+        if (this.props.children instanceof Array) {
+            titleText += 's';
+        }
+        return (
+          <div>
+            <h1>{titleText}</h1>
+            <ul>{this.props.children}</ul>
+          </div>
+        );
+      }
+    }
+
+-------------------------
+12.defaultProps
+------------------
+Take a look at the Button component class.
+
+Notice that on line 8, Button expects to receive a prop named text. The received text will be displayed inside of a <button></button> element.
+
+What if nobody passes any text to Button?
+
+If nobody passes any text to Button, then Button‘s display will be blank. It would be better if Button could display a default message instead.
+
+You can make this happen by giving your component class a property named defaultProps:
+
+    class Example extends React.Component {
+      render() {
+        return <h1>{this.props.text}</h1>;
+      }
+    }
+
+    Example.defaultProps;
+
+The defaultProps property should be equal to an object:
+
+    class Example extends React.Component {
+      render() {
+        return <h1>{this.props.text}</h1>;
+      }
+    }
+ 
+    // Set defaultProps equal to an object:
+    Example.defaultProps = {};
+
+Inside of this object, write properties for any default props that you’d like to set:
+
+    class Example extends React.Component {
+      render() {
+        return <h1>{this.props.text}</h1>;
+      }
+    }
+
+    Example.defaultProps = { text: 'yo' }; 
+
+If an <Example /> doesn’t get passed any text, then it will display “yo.”
+
+If an <Example /> does get passed some text, then it will display that passed-in text.
