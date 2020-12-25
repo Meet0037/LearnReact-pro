@@ -1385,3 +1385,280 @@ If you want to pass information that isn’t a string, then wrap that informatio
 In this next example, we pass several pieces of information to <Greeting />. The values that aren’t strings are wrapped in curly braces:
 
     <Greeting name="Frarthur" town="Flundon" age={2} haunted={false} />
+
+-----------------------------------
+4.Render a Component's props
+------------------------------
+You just passed information to a component’s props object!
+
+You will often want a component to display the information that you pass.
+
+Here’s how to make a component display passed-in information:
+
+1 - Find the component class that is going to receive that information.
+2 - Include this.props.name-of-information in that component class’s render method’s return statement.
+
+Exa:
+
+    import React from 'react';
+    import ReactDOM from 'react-dom';
+
+    class Greeting extends React.Component {
+      render() {
+        return <h1>Hi there, {this.props.firstName}!</h1>;
+      }
+    }
+
+    ReactDOM.render(
+      <Greeting firstName='meet' />, 
+      document.getElementById('app')
+    );
+    
+----------------------------------------
+5.Pass props From Component To Component
+----------------------------------------
+You have learned how to pass a prop to a component:
+
+    <Greeting firstName="Esmerelda" />
+
+You have also learned how to access and display a passed-in prop:
+
+    render() {
+      return <h1>{this.props.firstName}</h1>;
+    }
+
+The most common use of props is to pass information to a component, from a different component. You haven’t done that yet, but it’s very similar to what you’ve seen already.
+
+In this exercise, you will pass a prop from one component to another.
+
+A curmudgeonly clarification about grammar:
+You may have noticed some loose usage of the words prop and props. Unfortunately, this is pretty inevitable.
+
+props is the name of the object that stores passed-in information. this.props refers to that storage object. At the same time, each piece of passed-in information is called a prop. This means that props could refer to two pieces of passed-in information, or it could refer to the object that stores those pieces of information :(
+
+Ex:
+
+    //Greeting.js
+    import React from 'react';
+    
+    export class Greeting extends React.Component {
+      render() {
+        return <h1>Hi there, {this.props.name}!</h1>;
+      }
+    }
+    
+    //App.js
+    import React from 'react';
+    import ReactDOM from 'react-dom';
+    import {Greeting} from './Greeting.js';
+
+    class App extends React.Component {
+      render() {
+        return (
+          <div>
+            <h1>
+              Hullo and, "Welcome to The Newzz," "On Line!"
+            </h1>
+            <Greeting name="meet" />
+            <article>
+              Latest newzz:  where is my phone?
+            </article>
+          </div>
+        );
+      }
+    }
+
+    ReactDOM.render(
+      <App />, 
+      document.getElementById('app')
+    );
+
+------------------------------------
+6.Render Different UI Based on props
+----------------------------------
+Awesome! You passed a prop from a component to a different component, accessed that prop from the receiver component, and rendered it!
+
+You can do more with props than just display them. You can also use props to make decisions.
+
+In the code editor, look at the Welcome component class.
+
+You can tell from this.props.name on line 5 that Welcome expects to receive a piece of information called name. However, Welcome never renders this piece of information! Instead, it uses the information to make a decision.
+
+<Welcome /> instances will render the text WELCOME "2" MY WEB SITE BABYYY!!!!!, unless the user is Mozart, in which case they will render the more respectful
+hello sir it is truly great to meet you
+here on the web.
+
+The passed-in name is not displayed in either case! The name is used to decide what will be displayed. This is a common technique.
+
+Select Home.js and look at the Home component class. What will <Welcome /> render to the screen?
+
+    -----------------------------------
+    //Welcome.js
+    import React from 'react';
+
+    export class Welcome extends React.Component {
+      render() {
+        if (this.props.name === 'Wolfgang Amadeus Mozart') {
+          return (
+            <h2>
+              hello sir it is truly great to meet you here on the web
+            </h2>
+          );
+        } else {
+          return (
+            <h2>
+              WELCOME "2" MY WEB SITE BABYYY!!!!!
+            </h2>
+          );
+        }
+      }
+    }
+    -------------------------------------
+    //Home.js
+        import React from 'react';
+    import ReactDOM from 'react-dom';
+    import { Welcome } from './Welcome';
+
+    class Home extends React.Component {
+      render() {
+        return <Welcome name='Ludwig van Beethoven' />;
+      }
+    }
+
+    ReactDOM.render(
+      <Home />, 
+      document.getElementById('app')
+    );
+    --------------------------------------
+    //Greeting.js
+    import React from 'react';
+    import ReactDOM from 'react-dom';
+
+    export class Greeting extends React.Component {
+      render() {
+        if (this.props.signedIn === false) {
+          return <h1>GO AWAY</h1>;
+        } else {
+          return <h1>Hi there, {this.props.name}!</h1>;
+        }
+      }
+    }
+    --------------------------------
+    //App.js
+    import React from 'react';
+    import ReactDOM from 'react-dom';
+    import { Greeting } from './Greeting';
+
+    class App extends React.Component {
+      render() {
+        return (
+          <div>
+            <h1>
+              Hullo and, "Welcome to The Newzz," "On Line!"
+            </h1>
+            <Greeting name="Alison" signedIn={true} />
+            <article>
+              Latest:  where is my phone?
+            </article>
+          </div>
+        );
+      }
+    }
+
+    ReactDOM.render(
+      <App />, 
+      document.getElementById('app')
+    );
+    
+    ----------------------
+    Output: 
+    
+    Hullo and, "Welcome to The Newzz," "On Line!"
+                Hi there, Alison!
+            Latest: where is my phone?
+            
+--------------------------------------------
+7.Put an Event Handler in a Component Class
+--------------------------------------------
+You can, and often will, pass functions as props. It is especially common to pass event handler functions.
+
+In the next lesson, you will pass an event handler function as a prop. However, you have to define an event handler before you can pass one anywhere. In this lesson, you will define an event handler function.
+
+How do you define an event handler in React?
+
+You define an event handler as a method on the component class, just like the render method.
+
+Take a look in the code editor. On lines 4 through 8, an event handler method is defined, with similar syntax as the render method. On line 12, that event handler method is attached to an event (a click event, in this case).
+
+    //Example.js
+    import React from 'react';
+
+    class Example extends React.Component {
+      handleEvent() {
+        alert(`I am an event handler.
+          If you see this message,
+          then I have been called.`);
+      }
+
+      render() {
+        return (
+          <h1 onClick={this.handleEvent}>
+            Hello world
+          </h1>
+        );
+      }
+    }
+    
+----------------------------------
+8.Pass an Event Handler as a prop
+------------------------------------
+Good! You’ve defined a new method on the Talker component class. Now you’re ready to pass that function to another component.
+
+You can pass a method in the exact same way that you pass any other information. Behold, the mighty JavaScript.
+
+Select Talker.js.
+
+You want to pass talk from here to <Button />.
+
+If you want to pass any prop to <Button />, that means that you need to give <Button /> an attribute. Let’s start there.
+
+Inside of Talker‘s render method, give <Button /> the following attribute:
+
+    foo="bar"
+
+During the next two checkpoints, you’ll replace those values with the values that you need! Keep them as foo and "bar" for now.
+
+Your goal is to pass talk from <Talker /> to <Button />.
+
+What prop name should you choose?
+-> Since you’re going to pass a function named talk, you might as well use talk as your name. Inside of the render method, change your attribute name from foo to talk.
+
+Change talk="bar" to talk={this.talk}.
+
+--------------------------------------------
+9.Receive an Event Handler as a prop
+-------------------------------------------
+Receive an Event Handler as a prop
+
+Great! You just passed a function from <Talker /> to <Button />.
+
+In the code editor, select Button.js. Notice that Button renders a <button></button> element.
+
+If a user clicks on this <button></button> element, then you want your passed-in talk function to get called.
+
+That means that you need to attach talk to the <button></button> as an event handler.
+
+How do you do that? The same way that you attach any event handler to a JSX element: you give that JSX element a special attribute. The attribute’s name should be something like onClick or onHover. The attribute’s value should be the event handler that you want to attach.
+
+Ex:
+
+In Button.js, add an onClick attribute to the render method’s <button></button>.
+
+The onClick attribute’s value should be the passed-down talk function. Since you named your prop talk in the last exercise, you can access this prop via {this.props.talk}.
+
+Click Run. Once the browser refreshes, click on the button. Ew, how annoying!
+
+-----------------------------------------------
+10.handleEvent, onEvent, and this.props.onEvent
+------------------------------------------------
+
