@@ -2562,3 +2562,302 @@ No need to worry about binding functions to class instances, working with constr
 
 Calling the state setter signals to React that the component needs to re-render, so the whole function defining the component is called again. The magic of useState() is that it allows React to keep track of the current value of state from one render to the next!
 
+-------------------------------------
+3.Initialize State
+------------------------------------
+Great work building out your first stateful function component in the last exercise. Just like you used the State Hook to manage a variable with string values, we can use the State Hook to manage the value of any primitive data type and even data collections like arrays and objects!
+
+Have a look at the following function component. What data type does this state variable hold?
+
+    import React, { useState } from 'react';
+
+    function ToggleLoading() {
+      const [isLoading, setIsLoading] = useState();
+
+      return (
+        <div>
+          <p>The data is {isLoading ? 'Loading' : 'Not Loading'}</p>
+          <button onClick={() => setIsLoading(true)}>
+            Turn Loading On
+          </button>
+          <button onClick={() => setIsLoading(false)}>
+            Turn Loading Off
+          </button>
+        </div>
+      );
+    }
+
+The ToggleLoading() function component above is using the simplest of all data types, a boolean. Booleans are frequently used in React applications to represent whether data has loaded or not. In the example above, we see that true and false values are passed to the state setter, setIsLoading(). This code works just fine as is, but what if we want our component to start off with isLoading set to true?
+
+To initialize our state with any value we want, we simply pass the initial value as an argument to the useState() function call.
+
+    const [isLoading, setIsLoading] = useState(true);
+
+There are three ways in which this code affects our component:
+
+    1.During the first render, the initial state argument is used.
+    2.When the state setter is called, React ignores the initial state argument and uses the new value.
+    3.When the component re-renders for any other reason, React continues to use the same value from the previous render.
+
+If we don’t pass an initial value when calling useState(), then the current value of the state during the first render will be undefined. Often, this is perfectly fine for the machines, but it can be unclear to the humans reading our code. So, we prefer to explicitly initialize our state. If we don’t have the value needed during the first render, we can explicitly pass null instead of just passively leaving the value as undefined.
+
+--------------------------------------------
+4.Use State Setter Outside of JSX
+-------------------------------------------
+
+Let’s see how to manage the changing value of a string as a user types into a text input field:
+
+    import React, { useState } from 'react';
+
+    export default function EmailTextInput() {
+      const [email, setEmail] = useState('');
+      const handleChange = (event) => {
+        const updatedEmail = event.target.value;
+        setEmail(updatedEmail);
+      }
+
+      return (
+        <input value={email} onChange={handleChange} />
+      );
+    }
+
+Let’s break down how this code works!
+
+    The square brackets on the left side of the assignment operator signal array destructuring
+    The local variable named email is assigned the current state value at index 0 from the array returned by useState()
+    The local variable named setEmail() is assigned a reference to the state setter function at index 1 from the array returned by useState()
+    It’s convention to name this variable using the current state variable (email) with “set” prepended
+
+The JSX input tag has an event listener called onChange. This event listener calls an event handler each time the user types something in this element. In the example above, our event handler is defined inside of the definition for our function component, but outside of our JSX. Earlier in this lesson, we wrote our event handlers right in our JSX. Those inline event handlers work perfectly fine, but when we want to do something more interesting than just calling the state setter with a static value, it’s a good idea to separate that logic from everything else going on in our JSX. This separation of concerns makes our code easier to read, test, and modify.
+
+This is so common in React code, that we can comfortably simplify this:
+
+    const handleChange = (event) => {
+      const newEmail = event.target.value;
+      setEmail(newEmail);
+    }
+
+To this:
+
+    const handleChange = (event) => setEmail(event.target.value);
+
+Or even, use object destructuring to just write this:
+
+    const handleChange = ({target}) => setEmail(target.value);
+
+All three of these code snippets behave the same way, so there really isn’t a right and wrong between these different ways of doing this. We’ll use the last, most concise version moving forward.
+
+Full example:
+
+    //PhoneNumber.js
+    
+        import React,{useState} from 'react';
+
+    // regex to match numbers between 1 and 10 digits long
+    const validPhoneNumber = /^\d{1,10}$/;
+
+    export default function PhoneNumber() {
+      // declare current state and state setter 
+      const [phone, setPhone] = useState('');
+
+      const handleChange = ({ target })=> {
+        const newPhone = target.value;
+        const isValid = validPhoneNumber.test(newPhone);
+        if (isValid) {
+            // update state 
+            setPhone(newPhone);
+        }
+        // just ignore the event, when new value is invalid
+      };
+
+      return (
+        <div className='phone'>
+          <label for='phone-input'>Phone: </label>
+          <input value={phone} onChange={handleChange} id='phone-input' />
+        </div>
+      );
+    }
+
+---------------------------------------
+5.Set From Previous State
+--------------------------------------
+Often, the next value of our state is calculated using the current state. In this case, it is best practice to update state with a callback function. If we do not, we risk capturing outdated, or “stale”, state values.
+
+Let’s take a look at the following code:
+
+    import React, { useState } from 'react';
+
+    export default function Counter() {
+      const [count, setCount] = useState(0);
+
+      const increment = () => setCount(prevCount => prevCount + 1);
+
+      return (
+        <div>
+          <p>Wow, you've clicked that button: {count} times</p>
+          <button onClick={increment}>Click here!</button>
+        </div>
+      );
+    }
+
+When the button is pressed, the increment() event handler is called. Inside of this function, we use our setCount() state setter in a new way! Because the next value of count depends on the previous value of count, we pass a callback function as the argument for setCount() instead of a value (as we’ve done in previous exercises).
+
+    setCount(prevCount => prevCount + 1)
+
+When our state setter calls the callback function, this state setter callback function takes our previous count as an argument. The value returned by this state setter callback function is used as the next value of count (in this case prevCount + 1). Note: We can just call setCount(count +1) and it would work the same in this example… but for reasons that are out of scope for this lesson, it is safer to use the callback method.
+
+Full more example:
+    
+    //QuizNavBar.js
+    
+    import React, { useState } from 'react';
+
+    export default function QuizNavBar({ questions }) {
+      const [questionIndex, setQuestionIndex] = useState(0);
+
+      const goBack = () =>
+        setQuestionIndex((prevQuestionIndex) => prevQuestionIndex - 1);
+      const goToNext = () =>
+        setQuestionIndex((prevQuestionIndex) => prevQuestionIndex + 1);
+
+      const onFirstQuestion = questionIndex === 0;
+      const onLastQuestion = questionIndex === questions.length - 1;
+
+      return (
+        <nav>
+          <span>Question #{questionIndex + 1}</span>
+          <div>
+            <button onClick={goBack} disabled={onFirstQuestion}>
+              Go Back
+            </button>
+            <button onClick={goToNext} disabled={onLastQuestion}>
+              Next Question
+            </button>
+          </div>
+        </nav>
+      );
+    }
+
+--------------------
+6.Arrays in State
+--------------------
+
+Think about the last time that you ordered a pizza online. Mmmmm…
+
+Part of the magical website that brought you tasty food was built with code like this:
+
+    import React, { useState } from "react";
+
+    const options = ["Bell Pepper", "Sausage", "Pepperoni", "Pineapple"];
+
+    export default function PersonalPizza() {
+      const [selected, setSelected] = useState([]);
+
+      const toggleTopping = ({target}) => {
+        const clickedTopping = target.value;
+        setSelected((prev) => {
+         // check if clicked topping is already selected
+          if (prev.includes(clickedTopping)) {
+            // filter the clicked topping out of state
+            return prev.filter(t => t !== clickedTopping);
+          } else {
+            // add the clicked topping to our state
+            return [clickedTopping, ...prev];
+          }
+        });
+      };
+
+      return (
+        <div>
+          {options.map(option => (
+            <button value={option} onClick={toggleTopping} key={option}>
+              {selected.includes(option) ? "Remove " : "Add "}
+              {option}
+            </button>
+          ))}
+          <p>Order a {selected.join(", ")} pizza</p>
+        </div>
+      );
+    }
+
+JavaScript arrays are the best data model for managing and rendering JSX lists. In this example, we are using two arrays:
+
+options is an array that contains the names of all of the pizza toppings available
+
+selected is an array representing the selected toppings for our personal pizza
+
+The options array contains static data, meaning that it does not change. We like to define static data models outside of our function components since they don’t need to be recreated each time our component re-renders. In our JSX, we use the map method to render a button for each of the toppings in our options array.
+
+The selected array contains dynamic data, meaning that it changes, usually based on a user’s actions. We initialize selected as an empty array. When a button is clicked, the toggleTopping event handler is called. Notice how this event handler uses information from the event object to determine which topping was clicked.
+
+When updating an array in state, we do not just add new data to the previous array. We replace the previous array with a brand new array. This means that any information that we want to save from the previous array needs to be explicitly copied over to our new array. That’s what this spread syntax does for us: ...prev.
+
+-------------------------
+7.Objects in State
+-------------------------
+When we work with a set of related variables, it can be very helpful to group them in an object. Let’s look at an example!
+
+    export default function Login() {
+      const [formState, setFormState] = useState({});
+
+      const handleChange = ({ target }) => {
+        const { name, value } = target;
+        setFormState((prev) => ({
+          ...prev,
+          [name]: value
+        }));
+      };
+
+      return (
+        <form>
+          <input
+            value={formState.firstName}
+            onChange={handleChange}
+            name="firstName"
+            type="text"
+          />
+          <input
+            value={formState.password}
+            onChange={handleChange}
+            type="password"
+            name="password"
+          />
+        </form>
+      );
+    }
+
+A few things to notice:
+
+We use a state setter callback function to update state based on the previous value
+
+The spread syntax is the same for objects as for arrays: { ...oldObject, newKey: newValue }
+
+We reuse our event handler across multiple inputs by using the input tag’s name attribute to identify which input the change event came from
+
+Once again, when updating the state with setFormState() inside a function component, we do not modify the same object. We must copy over the values from the previous object when setting the next value of state. Thankfully, the spread syntax makes this super easy to do!
+
+Anytime one of the input values is updated, the handleChange() function will be called. Inside of this event handler, we use object destructuring to unpack the target property from our event object, then we use object destructuring again to unpack the name and value properties from the target object.
+
+Inside of our state setter callback function, we wrap our curly brackets in parentheses like so: setFormState((prev) => ({ ...prev })). This tells JavaScript that our curly brackets refer to a new object to be returned. We use ..., the spread operator, to fill in the corresponding fields from our previous state. Finally, we overwrite the appropriate key with its updated value. Did you notice the square brackets around the name? This Computed Property Name allows us to use the string value stored by the name variable as a property key!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
