@@ -2505,3 +2505,60 @@ Well done! You’ve written your first function component. Here’s a recap:
 3.Function components may accept a props parameter. Expect it to be a JavaScript object.
 
 Although function components and class components can do the same things, you’ll see a lot of function components in the React documentation and example apps. Some developers prefer them over class components for their simplicity and straightforward features, like Hooks, which you’ll learn later in your coding journey.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+H.The State Hook
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------
+1.Why Use Hooks?
+----------------------
+As React developers, we love breaking down complex problems into simple pieces.
+
+Classes, however, are not simple. They:
+
+    1.are difficult to reuse between components
+    2.are tricky and time-consuming to test
+    3.have confused many developers and caused lots of bugs
+
+The React core team heard all of this feedback from developers like us, and they engineered an incredible solution for us! React 16.8+ supports Hooks. With Hooks, we can use simple function components to do lots of the fancy things that we could only do with class components in the past. React Hooks, plainly put, are functions that let us “Hook into” state and lifecycle features directly from our function components. Hooks don’t work inside classes — they let us use fancy React features without classes. Keep in mind that React Hooks do not replace class components. They are completely optional; just a new tool that we can take advantage of. React offers a number of built-in Hooks. A few of these include useState(), useEffect(), useContext(), useReducer(), and useRef(). See the full list in the docs. In this lesson, we’ll learn different ways to manage state in a function component.
+
+-------------------------------------------
+2.Update Function Component State
+------------------------------------------
+Let’s get started with the State Hook, the most common Hook used for building React components. The State Hook is a named export from the React library, so we import it like this:
+
+same sentence - Import the default export from the ‘react’ library and call it React. We will be using the State Hook, so go ahead and import the named export useState from the ‘react’ library as well.
+
+    import React, { useState } from 'react';
+
+useState() is a JavaScript function defined in the React library. When we call this function, it returns an array with two values:
+
+    current state - the current value of this state
+    state setter - a function that we can use to update the value of this state
+
+Because React returns these two values in an array, we can assign them to local variables, naming them whatever we like. For example:
+
+    const [toggle, setToggle] = useState();
+
+Let’s have a look at an example of a function component using the State Hook:
+
+    import React, { useState } from "react";
+
+    function Toggle() {
+      const [toggle, setToggle] = useState();
+
+      return (
+        <div>
+          <p>The toggle is {toggle}</p>
+          <button onClick={() => setToggle("On")}>On</button>
+          <button onClick={() => setToggle("Off")}>Off</button>
+        </div>
+      );
+    }
+
+Notice how the state setter function, setToggle(), is called by our onClick event listeners. To update the value of toggle and re-render this component with the new value, all we need to do is call the setToggle() function with the next state value as an argument.
+
+No need to worry about binding functions to class instances, working with constructors, or dealing with the this keyword. With the State Hook, updating state is as simple as calling a state setter function.
+
+Calling the state setter signals to React that the component needs to re-render, so the whole function defining the component is called again. The magic of useState() is that it allows React to keep track of the current value of state from one render to the next!
+
