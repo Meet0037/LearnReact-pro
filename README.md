@@ -2840,10 +2840,229 @@ Anytime one of the input values is updated, the handleChange() function will be 
 
 Inside of our state setter callback function, we wrap our curly brackets in parentheses like so: setFormState((prev) => ({ ...prev })). This tells JavaScript that our curly brackets refer to a new object to be returned. We use ..., the spread operator, to fill in the corresponding fields from our previous state. Finally, we overwrite the appropriate key with its updated value. Did you notice the square brackets around the name? This Computed Property Name allows us to use the string value stored by the name variable as a property key!
 
+    //EditProfile.js
+    
+    import React, { useState } from "react";
 
+    export default function EditProfile() {
+      const [profile, setProfile] = useState({});
 
+      const handleChange = ({ target }) => {
+        const { name, value } = target;
+        setProfile((prevProfile) => ({
+          ...prevProfile,
+          [name]: value
+        }));
+      };
 
+      const handleSubmit = (event) => {
+        event.preventDefault();
+        alert(JSON.stringify(profile, '', 2));
+      };
 
+      return (
+        <form onSubmit={handleSubmit}>
+          <input
+            value={profile.firstName || ''}
+            onChange={handleChange}
+            name="firstName"
+            type="text"
+            placeholder="First Name"
+          />
+          <input
+            value={profile.lastName || ''}
+            onChange={handleChange}
+            type="text"
+            name="lastName"
+            placeholder="Last Name"
+          />
+          <input
+            value={profile.bday || ''}
+            onChange={handleChange}
+            type="date"
+            name="bday"
+          />
+          <input
+            value={profile.password || ''}
+            onChange={handleChange}
+            type="password"
+            name="password"
+            placeholder="Password"
+          />
+          <button type="submit">Save Profile</button>
+        </form>
+      );
+    }
+
+-------------------------------------
+8.Separate Hooks for Separate States
+------------------------------------
+While there are times when it can be helpful to store related data in a data collection like an array or object, it can also be helpful to separate data that changes separately into completely different state variables. Managing dynamic data is much easier when we keep our data models as simple as possible.
+
+For example, if we had a single object that held state for a subject you are studying at school, it might look something like this:
+
+    function Subject() {
+      const [state, setState] = useState({
+        currentGrade: 'B',
+        classmates: ['Hasan', 'Sam', 'Emma'],
+        classDetails: {topic: 'Math', teacher: 'Ms. Barry', room: 201};
+        exams: [{unit: 1, score: 91}, {unit: 2, score: 88}]);
+      });
+
+This would work, but think about how messy it could get to copy over all the other values when we need to update something in this big state object. For example, to update the grade on an exam, we would need an event handler that did something like this:
+
+    setState((prev) => ({
+     ...prev,
+      exams: prev.exams.map((exam) => {
+        if( exam.unit === updatedExam.unit ){
+          return { 
+            ...exam,
+            score: updatedExam.score
+          };
+        } else {
+          return exam;
+        }
+      }),
+    }));
+
+Yikes! Complex code like this is likely to cause bugs! Luckily, there is another option… We can make more than one call to the State Hook. In fact, we can make as many calls to useState() as we want! It’s best to split state into multiple state variables based on which values tend to change together. We can rewrite the previous example as follows…
+
+    function Subject() {
+      const [currentGrade, setGrade] = useState('B');
+      const [classmates, setClassmates] = useState(['Hasan', 'Sam', 'Emma']);
+      const [classDetails, setClassDetails] = useState({topic: 'Math', teacher: 'Ms. Barry', room: 201});
+      const [exams, setExams] = useState([{unit: 1, score: 91}, {unit: 2, score: 88}]);
+      // ...
+    }
+
+Managing dynamic data with separate state variables has many advantages, like making our code more simple to write, read, test, and reuse across components.
+
+Often, we find ourselves packaging up and organizing data in collections to pass between components, then separating that very same data within components where different parts of the data change separately. The wonderful thing about working with Hooks is that we have the freedom to organize our data the way that makes the most sense to us! 
+
+---------------------
+9.Review
+------------------
+
+Understand this:
+
+--------------------------------------------------
+
+    //index.js
+    
+    import React from "react";
+    import ReactDOM from "react-dom";
+    //import App from "./Container/AppClass";
+    import App from "./Container/AppFunction";
+
+    ReactDOM.render(
+      <App />,
+      document.getElementById("app")
+    );
+
+---------------------------------------------------------------
+
+    //AppClass.js - Using class component class
+    
+    import React, { Component } from "react";
+    import NewTask from "../Presentational/NewTask";
+    import TasksList from "../Presentational/TasksList";
+
+    export default class AppClass extends Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          newTask: {},
+          allTasks: []
+        };
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
+      }
+
+      handleChange({ target }){
+        const { name, value } = target;
+        this.setState((prevState) => ({
+          ...prevState,
+          newTask: {
+            ...prevState.newTask,
+            [name]: value,
+            id: Date.now()
+          }
+        }));
+      }
+
+      handleSubmit(event){
+        event.preventDefault();
+        if (!this.state.newTask.title) return;
+        this.setState((prevState) => ({
+          allTasks: [prevState.newTask, ...prevState.allTasks],
+          newTask: {}
+        }));
+      }
+
+      handleDelete(taskIdToRemove){
+        this.setState((prevState) => ({
+          ...prevState,
+          allTasks: prevState.allTasks.filter((task) => task.id !== taskIdToRemove)
+        }));
+      }
+
+      render() {
+        return (
+          <main>
+            <h1>Tasks</h1>
+            <NewTask
+              newTask={this.state.newTask}
+              handleChange={this.handleChange}
+              handleSubmit={this.handleSubmit}
+            />
+            <TasksList
+              allTasks={this.state.allTasks}
+              handleDelete={this.handleDelete}
+            />
+          </main>
+        );
+      }
+    }
+
+----------------------------------------------------------------
+
+    //AppFunction.js - Using function component class
+
+    import React, { useState } from "react";
+    import NewTask from "../Presentational/NewTask";
+    import TasksList from "../Presentational/TasksList";
+
+    export default function AppFunction() {
+      const [newTask, setNewTask] = useState({});
+      const handleChange = ({ target }) => {
+        const { name, value } = target;
+        setNewTask((prev) => ({ ...prev, id: Date.now(), [name]: value }));
+      };
+
+      const [allTasks, setAllTasks] = useState([]);
+      const handleSubmit = (event) => {
+        event.preventDefault();
+        if (!newTask.title) return;
+        setAllTasks((prev) => [newTask, ...prev]);
+        setNewTask({});
+      };
+      const handleDelete = (taskIdToRemove) => {
+        setAllTasks((prev) => prev.filter((task) => task.id !== taskIdToRemove));
+      };
+
+      return (
+        <main>
+          <h1>Tasks</h1>
+          <NewTask
+            newTask={newTask}
+            handleChange={handleChange}
+            handleSubmit={handleSubmit}
+          />
+          <TasksList allTasks={allTasks} handleDelete={handleDelete} />
+        </main>
+      );
+    }
 
 
 
