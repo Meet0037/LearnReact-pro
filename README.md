@@ -3080,7 +3080,122 @@ A few reasons why we may want to run some code after each render:
 
 If you’ve worked with class components’ lifecycle methods, think of the Effect Hook as componentDidMount(), componentDidUpdate(), and componentWillUnmount() all combined into one. useEffect() is a function that we’ll use to execute some code after the first render, after each re-render, and after the last render of a function component. Later in this lesson, we’ll learn how to fine-tune exactly when this code is executed even further.
 
+LOok at this if you can understand:
 
+    //PageTitleClass.js
+    import React, {Component} from 'react';
+
+    export default class PageTitle extends Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          name: ''
+        };
+      }
+
+      componentDidMount() {
+        document.title = this.state.name;
+      }
+
+      componentDidUpdate() {
+        document.title == `Hi, ${this.state.name}`;
+      }
+
+      render() {
+        return (
+          <div>
+            <p>Use the input field below to rename this page!</p>
+            <input 
+              onChange={({target}) => this.setState({ name: target.value })} 
+              value={this.state.name} 
+              type='text' />
+          </div>
+        );
+      }
+    }
+--------------------------------------------------------------------------
+
+    //PageTitleFunction.js
+    
+    import React, { useState, useEffect } from 'react';
+ 
+    export default function PageTitle() {
+      const [name, setName] = useState('');
+
+     useEffect(() => {
+        document.title = `Hi, ${name}`;
+      }, [name]);
+
+      return (
+        <div>
+          <p>Use {name} input field below to rename this page!</p>
+          <input 
+            onChange={({target}) => setName(target.value)} 
+            value={name} 
+            type='text' />
+        </div>
+      );
+    }
+    
+------------------------------------------------
+2.Function Component Effects
+----------------------------------------------
+
+Let’s break down how our PageTitle() function component is using the Effect Hook to execute some code after each render!
+
+    import React, { useState, useEffect } from 'react';
+
+    function PageTitle() {
+      const [name, setName] = useState('');
+
+      useEffect(() => {
+        document.title = `Hi, ${name}`;
+      });
+
+      return (
+        <div>
+          <p>Use the input field below to rename this page!</p>
+          <input onChange={({target}) => setName(target.value)} value={name} type='text' />
+        </div>
+      );
+    }
+
+First, we import the Effect Hook from the react library, like so:
+
+    import { useEffect } from 'react';
+
+The Effect Hook is used to call another function that does something for us so there is nothing returned when we call the useEffect() function.
+
+The first argument passed to the useEffect() function is the callback function that we want React to call after each time this component renders. We will refer to this callback function as our effect.
+
+In our example, the effect is:
+
+    () => { document.title = name; }
+
+In our effect, we assign the value of the name variable to the document.title. For more on this syntax, have a look at this.
+
+Notice how we use the current state inside of our effect. Even though our effect is called after the component renders, we still have access to the variables in the scope of our function component! When React renders our component, it will update the DOM as usual, and then run our effect after the DOM has been updated. This happens for every render, including the first and last one.
+
+--------------------------------
+3.Clean Up Effects
+--------------------------------
+
+Some effects require cleanup. For example, we might want to add event listeners to some element in the DOM, beyond the JSX in our component. When we add event listeners to the DOM, it is important to remove those event listeners when we are done with them to avoid memory leaks!
+
+Let’s consider the following effect:
+
+    useEffect(()=>{
+      document.addEventListener('keydown', handleKeyPress);
+      return () => {
+        document.removeEventListener('keydown', handleKeyPress);
+      };
+    })
+
+If our effect didn’t return a cleanup function, then a new event listener would be added to the DOM’s document object every time that our component re-renders. Not only would this cause bugs, but it could cause our application performance to diminish and maybe even crash!
+
+Because effects run after every render and not just once, React calls our cleanup function before each re-render and before unmounting to clean up each effect call.
+
+If our effect returns a function, then the useEffect() Hook always treats that as a cleanup function. React will call this cleanup function before the component re-renders or unmounts. Since this cleanup function is optional, it is our responsibility to return a cleanup function from our effect when our effect code could create memory leaks.
 
 
 
