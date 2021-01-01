@@ -22,7 +22,7 @@ A basic unit of JSX is called a JSX element.
 
 Here’s an example of a JSX element:
 
-<h1>Hello world</h1>
+     <h1>Hello world</h1>
 
 This JSX element looks exactly like HTML! The only noticeable difference is that you would find it in a JavaScript file, instead of in an HTML file.
 
@@ -3800,6 +3800,153 @@ In this lesson, we will expand the pattern one last time. A child component upda
 
 An understanding of this final pattern will be very helpful in the wild, not to mention in the next React course. Click Next and we’ll build an example!
 
-    <video class="video__1L7pkFXzmTb3_Qudutzh-9" autoplay="" loop="" controls="">
-        <source src="http://content.codecademy.com/courses/React/react_animations-child-updates-siblings.mp4">
-    </video>
+In this video, the Like and Stats components are siblings under the Reactions parent component.
+
+    1.The Reactions component passes an event handler to the Like component.
+    2.When Like is clicked, the handler is called, which causes the parent Reactions component to send a new prop to Stats.
+    3.The Stats component updates with the new information.
+
+-------------------------------------------------
+2.One Sibling to Display, Another to Change
+---------------------------------------------------
+One of the very first things that you learned about components is that they should only have one job.
+
+In the last lesson, Child had two jobs:
+
+1 - Child displayed a name.
+
+2 - Child offered a way to change that name.
+
+You should divide Child in two: one component for displaying the name, and a different component for allowing a user to change the name.
+
+In the code editor, select Child.js. Notice that these lines have vanished:
+
+     <h1>
+       Hey, my name is {this.props.name}! 
+     </h1>
+
+The new version of Child renders a dropdown menu for changing the name, and that’s it.
+
+Select Sibling.js in the code editor.
+
+Read through the render function’s return statement.
+
+Here, the name is displayed! Or at least it will be displayed, once you’ve done a little editing.
+
+That brings us to the essential new concept for this lesson: you will have one stateless component display information, and a different stateless component offer the ability to change that information.
+
+----------------------------------------------
+3.Pass the Right props to the Right Siblings
+----------------------------------------------
+Look at Parent.js in the code editor.
+
+Three things have changed in this file since the last Lesson:
+
+    1. Sibling has been required on line 4.
+    2. A <Sibling /> instance has been added to the render function on line 27.
+    3. <Sibling /> and <Child /> have been wrapped in a <div></div>, since JSX expressions must have only one outer element.
+
+-----------------------------------------------------
+4.Display Information in a Sibling Component
+------------------------------------------------------
+You’re on the last step!
+
+You’ve passed the name down to <Sibling /> as a prop. Now <Sibling /> has to display that prop.
+
+Ex files:
+
+     //Sibling.js
+     //For Displaying information
+     
+     import React from 'react';
+
+     export class Sibling extends React.Component {
+       render() {
+         const name = this.props.name;
+         return (
+           <div>
+             <h1>Hey, my name is {name}!</h1>
+             <h2>Don't you think {name} is the prettiest name ever?</h2>
+             <h2>Sure am glad that my parents picked {name}!</h2>
+           </div>
+         );
+       }
+     }
+     
+     -----------------------------------------------------
+     
+     //Parent.js
+     //Store information as State(new selected name)
+     
+     import React from 'react';
+     import ReactDOM from 'react-dom';
+     import { Child } from './Child';
+     import { Sibling } from './Sibling';
+
+     class Parent extends React.Component {
+       constructor(props) {
+         super(props);
+
+         this.state = { name: 'Frarthur' };
+
+         this.changeName = this.changeName.bind(this);
+       }
+
+       changeName(newName) {
+         this.setState({
+           name: newName
+         });
+       }
+
+       render() {
+         return (
+           <div>
+             <Child 
+               onChange={this.changeName} />
+             <Sibling name={this.state.name}/>
+           </div>
+         );
+       }
+     }
+
+     ReactDOM.render(
+       <Parent />,
+       document.getElementById('app')
+     );
+     
+     ---------------------------------------------------
+     
+     //Child.js
+     //Child‘s job is to offer a way to change the chosen name. Not to display it!
+     
+     import React from 'react';
+
+     export class Child extends React.Component {
+       constructor(props) {
+         super(props);
+
+         this.handleChange = this.handleChange.bind(this);
+       }
+
+       handleChange(e) {
+         const name = e.target.value;
+         this.props.onChange(name);
+       }
+
+       render() {
+         return (
+           <div>
+             <select
+               id="great-names"
+               onChange={this.handleChange}>
+
+               <option value="Frarthur">Frarthur</option>
+               <option value="Gromulus">Gromulus</option>
+               <option value="Thinkpiece">Thinkpiece</option>
+             </select>
+           </div>
+         );
+       }
+     }
+     
+   
