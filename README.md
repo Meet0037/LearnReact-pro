@@ -3800,4 +3800,6 @@ In this lesson, we will expand the pattern one last time. A child component upda
 
 An understanding of this final pattern will be very helpful in the wild, not to mention in the next React course. Click Next and we’ll build an example!
 
-<video class="video__1L7pkFXzmTb3_Qudutzh-9" autoplay="" loop="" controls=""><source src="http://content.codecademy.com/courses/React/react_animations-child-updates-siblings.mp4"></video>
+<video class="video__1L7pkFXzmTb3_Qudutzh-9" autoplay="" loop="" controls="">
+    <source src="http://content.codecademy.com/courses/React/react_animations-child-updates-siblings.mp4">
+</video>
