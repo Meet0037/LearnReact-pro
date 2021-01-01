@@ -3592,4 +3592,212 @@ This is potentially confusing. props and state store dynamic information. Dynami
 If that’s a bit confusing, don’t worry! The next two lessons will be examples.
 
 
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+K.Child Components Update Their Parents' state
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+    //Step1.js
+    import React from 'react';
+    import ReactDOM from 'react-dom';
+    import { ChildClass } from './ChildClass';
+
+    class ParentClass extends React.Component {
+      constructor(props) {
+        super(props);
+
+        this.state = { totalClicks: 0 };
+      }
+
+      handleClick() {
+        const total = this.state.totalClicks;
+
+        // calling handleClick will 
+        // result in a state change:
+        this.setState(
+          { totalClicks: total + 1 }
+        );
+      }
+    }
+    
+    //Step2.js
+    
+    import React from 'react';
+    import ReactDOM from 'react-dom';
+    import { ChildClass } from './ChildClass';
+
+    class ParentClass extends React.Component {
+      constructor(props) {
+        super(props);
+
+        this.state = { totalClicks: 0 };
+
+        this.handleClick = this.handleClick.bind(this);
+      }
+
+      handleClick() {
+        const total = this.state.totalClicks;
+
+        // calling handleClick will 
+        // result in a state change:
+        this.setState(
+          { totalClicks: total + 1 }
+        );
+      }
+
+      // The stateful component class passes down
+      // handleClick to a stateless component class:
+      render() {
+        return (
+          <ChildClass onClick={this.handleClick} />
+        );
+      }
+    }
+    
+    //Step3.js
+    
+    import React from 'react';
+    import ReactDOM from 'react-dom';
+
+    export class ChildClass extends React.Component {
+      render() {
+        return (
+          // The stateless component class uses
+          // the passed-down handleClick function,
+          // accessed here as this.props.onClick,
+          // as an event handler:
+          <button onClick={this.props.onClick}>
+            Click Me!
+          </button>
+        );
+      }
+    }
+    
+How does a stateless, child component update the state of the parent component? Here’s how that works:
+
+1..
+
+The parent component class defines a method that calls this.setState().
+
+For an example, look in Step1.js at the .handleClick() method.
+
+2..
+
+The parent component binds the newly-defined method to the current instance of the component in its constructor. This ensures that when we pass the method to the child component, it will still update the parent component.
+
+For an example, look in Step2.js at the end of the constructor() method.
+
+3..
+
+Once the parent has defined a method that updates its state and bound to it, the parent then passes that method down to a child.
+
+Look in Step2.js, at the prop on line 28.
+
+4..
+
+The child receives the passed-down function, and uses it as an event handler.
+
+Look in Step3.js. When a user clicks on the <button></button>, a click event will fire. This will make the passed-down function get called, which will update the parent’s state.
+
+------------------------------------
+2.Define an Event Handler
+------------------------------------
+To make a child component update its parent’s state, the first step is something that you’ve seen before: you must define a state-changing method on the parent.
+
+--------------------------------------
+3.Pass the Event Handler
+---------------------------------------
+In the last exercise, you defined a function in Parent that can change Parent‘s state.
+
+Parent must pass this function down to Child, so that Child can use it in an event listener on the dropdown menu.
+
+---------------------------------------
+4.Receive the Event Handler
+------------------------------------------
+You just passed a function down to Child that can change Parent‘s state! 
+
+Ex files:
+
+    //Child.js
+    
+    import React from 'react';
+
+    export class Child extends React.Component {
+
+      constructor(props) {
+        super(props);
+        this.handleChange = this.handleChange.bind(this);
+      }
+
+      handleChange(e) {
+        const name = e.target.value;
+        this.props.onChange(name);
+      }
+      render() {
+        return (
+          <div>
+            <h1>
+              Hey my name is {this.props.name}!
+            </h1>
+            <select id="great-names" onChange={this.handleChange}>
+              <option value="Frarthur">
+                Frarthur
+              </option>
+
+              <option value="Gromulus">
+                Gromulus
+              </option>
+
+              <option value="Thinkpiece">
+                Thinkpiece
+              </option>
+            </select>
+          </div>
+        );
+      }
+    }
+    
+    //Parent.js
+    
+    import React from 'react';
+    import ReactDOM from 'react-dom';
+    import { Child } from './Child';
+
+    class Parent extends React.Component {
+      constructor(props) {
+        super(props);
+
+        this.state = { name: 'Frarthur' };
+        this.changeName = this.changeName.bind(this);
+      }
+
+      changeName(newName) {
+        this.setState({
+          name: newName
+        });
+      }
+
+      render() {
+        return <Child name={this.state.name} onChange={this.changeName}/>
+      }
+    }
+
+    ReactDOM.render(
+        <Parent />,
+        document.getElementById('app')
+    );
+    
+----------------------------------------------
+L.Child Components Update Sibling Components
+----------------------------------------------
+
+Patterns within patterns within patterns!
+
+In lesson 1, you learned your first React programming pattern: a stateful, parent component passes down a prop to a stateless, child component.
+
+In lesson 2, you learned that lesson 1’s pattern is actually part of a larger pattern: a stateful, parent component passes down an event handler to a stateless, child component. The child component then uses that event handler to update its parent’s state.
+
+In this lesson, we will expand the pattern one last time. A child component updates its parent’s state, and the parent passes that state to a sibling component.
+
+An understanding of this final pattern will be very helpful in the wild, not to mention in the next React course. Click Next and we’ll build an example!
+
+<video class="video__1L7pkFXzmTb3_Qudutzh-9" autoplay="" loop="" controls=""><source src="http://content.codecademy.com/courses/React/react_animations-child-updates-siblings.mp4"></video>
