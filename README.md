@@ -4048,3 +4048,71 @@ One way to make styles reusable is to keep them in a separate JavaScript file. T
 
 In the code editor, move back and forth between facebookStyles.js and FacebookColorThief.js to see a styles file in action.
 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+N.Container Components From Presentational Components
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+In this lesson, you will learn a programming pattern that will help organize your React code.
+
+As you continue building your React application, you will soon realize that one component has too many responsibilities, but how do you know when you have reached that point?
+
+Separating container components from presentational components helps to answer that question. It shows you when it might be a good time to divide a component into smaller components. It also shows you how to perform that division.
+
+Ex:
+
+     //GuineaPigs.js
+     
+     import React from 'react';
+     import ReactDOM from 'react-dom';
+
+     const GUINEAPATHS = [
+       'https://content.codecademy.com/courses/React/react_photo-guineapig-1.jpg',
+       'https://content.codecademy.com/courses/React/react_photo-guineapig-2.jpg',
+       'https://content.codecademy.com/courses/React/react_photo-guineapig-3.jpg',
+       'https://content.codecademy.com/courses/React/react_photo-guineapig-4.jpg'
+     ];
+
+     export class GuineaPigs extends React.Component {
+       constructor(props) {
+         super(props);
+
+         this.state = { currentGP: 0 };
+
+         this.interval = null;
+
+         this.nextGP = this.nextGP.bind(this);
+       }
+
+       nextGP() {
+         let current = this.state.currentGP;
+         let next = ++current % GUINEAPATHS.length;
+         this.setState({ currentGP: next });
+       }
+
+       componentDidMount() {
+         this.interval = setInterval(this.nextGP, 5000);
+       }
+
+       componentWillUnmount() {
+         clearInterval(this.interval);
+       }
+
+       render() {
+         let src = GUINEAPATHS[this.state.currentGP];
+         return (
+           <div>
+             <h1>Cute Guinea Pigs</h1>
+             <img src={src} />
+           </div>
+         );
+       }
+     }
+
+     ReactDOM.render(
+       <GuineaPigs />, 
+       document.getElementById('app')
+     );
+     
+-----------------------------------------------------
+2.Create Container Component
+------------------------------------------------
