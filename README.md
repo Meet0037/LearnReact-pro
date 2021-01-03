@@ -4116,3 +4116,212 @@ Ex:
 -----------------------------------------------------
 2.Create Container Component
 ------------------------------------------------
+Separating container components from presentational components is a popular React programming pattern. It is a special application of the concepts learned in the Stateless Components From Stateful Components module.
+
+If a component has to have state, make calculations based on props, or manage any other complex logic, then that component shouldn’t also have to render HTML-like JSX.
+
+The functional part of a component (state, calculations, etc.) can be separated into a container component.
+
+-----------------------------------------------
+3.Separate Presentational Component
+---------------------------------------------
+Now that we’ve created a container component for the logic, we can dedicate the original component, GuineaPigs, to be a presentational component.
+
+The presentational component’s only job is to contain HTML-like JSX. It should be an exported component and will not render itself because a presentational component will always get rendered by a container component.
+
+As a separate example, say we have Presentational and Container components. Presentational.js must export the component class (or function, when applicable):
+
+     export class Presentational extends Component {
+
+Container.js must import that component:
+
+     import { Presentational } from 'Presentational.js';
+     
+Ex:
+
+     //GuineaPigs.js
+     
+     import React from 'react';
+
+
+     const GUINEAPATHS = [
+       'https://content.codecademy.com/courses/React/react_photo-guineapig-1.jpg',
+       'https://content.codecademy.com/courses/React/react_photo-guineapig-2.jpg',
+       'https://content.codecademy.com/courses/React/react_photo-guineapig-3.jpg',
+       'https://content.codecademy.com/courses/React/react_photo-guineapig-4.jpg'
+     ];
+
+     export class GuineaPigs extends React.Component {
+       constructor(props) {
+         super(props);
+
+         this.state = { currentGP: 0 };
+
+         this.interval = null;
+
+         this.nextGP = this.nextGP.bind(this);
+       }
+
+       nextGP() {
+         let current = this.state.currentGP;
+         let next = ++current % GUINEAPATHS.length;
+         this.setState({ currentGP: next });
+       }
+
+       componentDidMount() {
+         this.interval = setInterval(this.nextGP, 5000);
+       }
+
+       componentWillUnmount() {
+         clearInterval(this.interval);
+       }
+
+       render() {
+         let src = GUINEAPATHS[this.state.currentGP];
+         return (
+           <div>
+             <h1>Cute Guinea Pigs</h1>
+             <img src={src} />
+           </div>
+         );
+       }
+     }
+
+     //GuineaPigsContainer.js
+     
+     import React from 'react';
+     import ReactDOM from 'react-dom';
+     import {GuineaPigs} from '../components/GuineaPigs.js'
+
+     const GUINEAPATHS = [
+       'https://content.codecademy.com/courses/React/react_photo-guineapig-1.jpg',
+       'https://content.codecademy.com/courses/React/react_photo-guineapig-2.jpg',
+       'https://content.codecademy.com/courses/React/react_photo-guineapig-3.jpg',
+       'https://content.codecademy.com/courses/React/react_photo-guineapig-4.jpg'
+     ];
+
+     class GuineaPigs extends React.Component {
+       constructor(props) {
+         super(props);
+
+         this.state = { currentGP: 0 };
+
+         this.interval = null;
+
+         this.nextGP = this.nextGP.bind(this);
+       }
+
+       nextGP() {
+         let current = this.state.currentGP;
+         let next = ++current % GUINEAPATHS.length;
+         this.setState({ currentGP: next });
+       }
+
+       componentDidMount() {
+         this.interval = setInterval(this.nextGP, 5000);
+       }
+
+       componentWillUnmount() {
+         clearInterval(this.interval);
+       }
+
+       render() {
+         let src = GUINEAPATHS[this.state.currentGP];
+         return (
+           <div>
+             <h1>Cute Guinea Pigs</h1>
+             <img src={src} />
+           </div>
+         );
+       }
+     }
+
+     ReactDOM.render(
+       <GuineaPigs />, 
+       document.getElementById('app')
+     );
+
+-------------------------------------------------------------
+ 4.Render Presentational Component in Container Component
+-------------------------------------------------------------
+
+We now have a container component (containers/GuineaPigsContainer.js) for logic and a presentational component (components/GuineaPigs.js) for rendering JSX!
+
+The container component should now render the presentational component instead of rendering JSX.
+
+---------------------------------------------------------
+5.Remove Logic from Presentational Component
+--------------------------------------------------------
+Our container component now renders the GuineaPigs presentational component instead of JSX statements!
+
+The last step to separating the container component from the presentational component is to remove redundant logic in the presentational component. The presentational component should be left with the render function that contains JSX statements.
+
+Ex last edited files of this topic:
+
+     //GuineaPigs.js (container component)
+
+     import React from 'react';
+
+     export class GuineaPigs extends React.Component {
+
+     render() {
+         let src = this.props.src;
+         return (
+           <div>
+             <h1>Cute Guinea Pigs</h1>
+             <img src={src} />
+           </div>
+         );
+       }
+     }
+    
+-----------------------------------------------------
+     
+     //GuineaPigsContainer.js (presentational component)
+
+     import React from 'react';
+     import ReactDOM from 'react-dom';
+     import { GuineaPigs } from '../components/GuineaPigs';
+
+     const GUINEAPATHS = [
+       'https://content.codecademy.com/courses/React/react_photo-guineapig-1.jpg',
+       'https://content.codecademy.com/courses/React/react_photo-guineapig-2.jpg',
+       'https://content.codecademy.com/courses/React/react_photo-guineapig-3.jpg',
+       'https://content.codecademy.com/courses/React/react_photo-guineapig-4.jpg'
+     ];
+
+     class GuineaPigsContainer extends React.Component {
+       constructor(props) {
+         super(props);
+
+         this.state = { currentGP: 0 };
+
+         this.interval = null;
+
+         this.nextGP = this.nextGP.bind(this);
+       }
+
+       nextGP() {
+         let current = this.state.currentGP;
+         let next = ++current % GUINEAPATHS.length;
+         this.setState({ currentGP: next });
+       }
+
+       componentDidMount() {
+         this.interval = setInterval(this.nextGP, 5000);
+       }
+
+       componentWillUnmount() {
+         clearInterval(this.interval);
+       }
+
+       render() { 
+         const src = GUINEAPATHS[this.state.currentGP]; 
+         return <GuineaPigs src={src} />;
+       }
+     }
+
+     ReactDOM.render(
+       <GuineaPigsContainer />, 
+       document.getElementById('app')
+     );
