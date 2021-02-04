@@ -4454,7 +4454,7 @@ See below, Ex:
      -----------------------------
      Let's Review,
      
-     ----------------------------------------------------------------------------------------------------------------------------------------------------------
+     
      // Normal way to display a prop:
      
      export class MyComponentClass extends React.Component {
@@ -4484,7 +4484,6 @@ See below, Ex:
           let title = props.title;
        return <h1>{title}</h1>;
      }
-     ----------------------------------------------------------------------------------------------------------------------------------------------------------
      
 Remember function components? You can see some familiar ones in Example.js.
 
