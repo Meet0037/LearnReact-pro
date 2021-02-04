@@ -4382,3 +4382,161 @@ MessageDisplayer only expects one prop: message. Therefore, its propTypes object
 ---------------------------------------------------
 3.Add Properties to PropTypes
 ---------------------------------------------------
+
+In the code editor, look at the property on MessageDisplayer‘s propTypes object:
+
+message: PropTypes.string 
+
+What are the properties on propTypes supposed to be, exactly?
+
+The name of each property in propTypes should be the name of an expected prop. In our case, MessageDisplayer expects a prop named message, so our property’s name is message.
+
+The value of each property in propTypes should fit this pattern:
+
+PropTypes.expected_data_type_goes_here
+
+Since message is presumably going to be a string, we chose PropTypes.string. You can see this on line 12. Notice the difference in capitalization between the propTypes object and PropTypes!
+
+Each property on the propTypes object is called a propType.
+
+Select the next file in the code editor, Runner.js. Find Runner‘s propTypes object.
+
+Runner has six propTypes! Look at each one. Note that bool and func are abbreviated, but all other data types are spelled normally.
+
+If you add .isRequired to a propType, then you will get a console warning if that prop isn’t sent.
+
+Try to find all six props from the propTypes object in Runner‘s render function: this.props.message, this.props.style, etc.
+
+See below, Ex:
+
+     import React from 'react';
+     import PropTypes from 'prop-types';
+
+     export class Runner extends React.Component {
+       render() {
+          let miles = this.props.miles;
+         let km = this.props.milesToKM(miles);
+         let races = this.props.races.map(function(race, i){
+           return <li key={race + i}>{race}</li>;
+         });
+
+         return (
+           <div style={this.props.style}>
+             <h1>{this.props.message}</h1>
+             { this.props.isMetric && 
+               <h2>One Time I Ran {km} Kilometers!</h2> }
+             { !this.props.isMetric && 
+               <h2>One Time I Ran {miles} Miles!</h2> }
+             <h3>Races I've Run</h3>
+             <ul id="races">{races}</ul>
+           </div>
+         );
+       }
+     }
+
+     Runner.propTypes = {
+       message:   PropTypes.string.isRequired,
+       style:     PropTypes.object.isRequired,
+       isMetric:  PropTypes.bool.isRequired,
+       miles:     PropTypes.number.isRequired,
+       milesToKM: PropTypes.func.isRequired,
+       races:     PropTypes.array.isRequired
+     };
+     
+----------------------------------------------
+4.PropTypes in Function Components
+-------------------------------------------
+
+     Before that,    
+ 
+     -----------------------------
+     Remember function components?
+     -----------------------------
+     Let's Review,
+     
+     ----------------------------------------------------------------------------------------------------------------------------------------------------------
+     // Normal way to display a prop:
+     
+     export class MyComponentClass extends React.Component {
+       render() {
+         return <h1>{this.props.title}</h1>;
+       }
+     }
+
+     // Functional component way to display a prop:
+     
+     export const MyComponentClass = (props) => {
+       return <h1>{props.title}</h1>;
+     }
+
+     // Normal way to display a prop using a variable:
+     
+     export class MyComponentClass extends React.component {
+       render() {
+          let title = this.props.title;
+         return <h1>{title}</h1>;
+       }
+     }
+
+     // Functional component way to display a prop using a variable:
+     
+     export const MyComponentClass = (props) => {
+          let title = props.title;
+       return <h1>{title}</h1>;
+     }
+     ----------------------------------------------------------------------------------------------------------------------------------------------------------
+     
+Remember function components? You can see some familiar ones in Example.js.
+
+How could you write propTypes for a function component?
+
+     // Usual way:
+     class Example extends React.component{
+
+     }
+
+     Example.propTypes = {
+
+     };
+     ...
+ 
+     // Function component way:
+     const Example = (props) => {
+       // ummm ??????
+     }
+
+It turns out the process is fairly similar. To write propTypes for a function component, you define a propTypes object as a property of the function component itself. Here’s what that looks like:
+
+     const Example = (props) => {
+       return <h1>{props.message}</h1>;
+     }
+
+     Example.propTypes = {
+       message: PropTypes.string.isRequired
+     };
+---------------------------------------------------------------------------
+     
+     Ex:
+     
+     //GuineaPigs.js
+     
+     import React from 'react';
+     import PropTypes from 'prop-types';
+
+     export const GuineaPigs = (props) => {
+       let src = props.src;
+       return (
+         <div>
+           <h1>Cute Guinea Pigs</h1>
+           <img src={src} />
+         </div>
+       );
+     }
+
+     GuineaPigs.propTypes = {
+       src: PropTypes.string.isRequired
+     }
+
+
+
+     
